@@ -1,15 +1,20 @@
-import CookieManager from 'src/utils/CookieManager'
+import 'src/styles/auth.sass'
+import { TOKEN_COOKIE_NAME } from 'src/utils/CookieManager'
 import { useUser } from 'src/context/UserContext'
 import { login } from 'src/api/AuthService'
 
 import React, { useState } from 'react'
+import { useCookies } from "react-cookie";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { Link, useNavigate } from 'react-router-dom'
 import { jwtDecode } from 'jwt-decode'
 
 const Login = () => {
-  const [credentials, setCredentials] = useState({ email: '', password: ''})
+  const [credentials, setCredentials] = useState( { email: '', password: ''} )
   const { updateUser } = useUser()
+  const [, setCookie] = useCookies([TOKEN_COOKIE_NAME])
+  const navigate = useNavigate()
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -20,29 +25,38 @@ const Login = () => {
 
     updateUser(decoded)
 
-    CookieManager.setCookie(CookieManager.TOKEN_COOKIE_NAME, token, 
-      { path: '/', expires: decoded.exp * 1000 })
+    setCookie(TOKEN_COOKIE_NAME, token, 
+      { path: '/', maxAge: decoded.exp * 1000, sameSite: 'None', secure: true })
+    
+    navigate('/')
   }
 
   return (
-    <Form onSubmit={(handleLogin)}>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Email address</Form.Label>
-        <Form.Control type="email" placeholder="Enter email" 
-          value={credentials.email}
-          onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}/>
-      </Form.Group>
+    <div className='Wrapper'>
+      <Form className="Auth__Form" onSubmit={(handleLogin)}>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control type="email" placeholder="Enter email" 
+            value={credentials.email}
+            onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}/>
+        </Form.Group>
 
-      <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>Password</Form.Label>
-        <Form.Control type="password" placeholder="Password"
-          value={credentials.password}
-          onChange={(e) => setCredentials({ ...credentials, password: e.target.value})}/>
-      </Form.Group>
-      <Button variant="primary" type="submit">
-        Submit
-      </Button>
-    </Form>
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control type="password" placeholder="Password"
+            value={credentials.password}
+            onChange={(e) => setCredentials({ ...credentials, password: e.target.value})}/>
+        </Form.Group>
+
+        <Link className="d-block mb-3" to="/register">
+          Sign up here
+        </Link>
+
+        <Button className="Auth__Button mx-auto d-block width" variant="primary" type="submit">
+          Login
+        </Button>
+      </Form>
+    </div>
   )
 }
 

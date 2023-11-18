@@ -1,25 +1,30 @@
 import { useCookies } from "react-cookie";
 
-const TOKEN_COOKIE_NAME = 'token_cookie'
+export const TOKEN_COOKIE_NAME = 'token_cookie'
 
-const setCookie = (name, value, options) => {
-  const [cookies, setCookie] = useCookies([name])
+export const setCookie = (name, value, options) => {
+  const [, setCookie] = useCookies([name])
   setCookie(name, value, options)
 }
 
-const getCookie = (name) => {
+export const getCookie = (name) => {
   const [cookies] = useCookies([name])
   return cookies[name] || null
 }
 
-const removeCookie = (name) => {
+export const removeCookie = (name) => {
   const [, removeCookie] = useCookies([name])
   removeCookie(name)
 }
 
-export default (
-  TOKEN_COOKIE_NAME,
-  setCookie,
-  getCookie,
-  removeCookie
-)
+export const getTokenFromCookie = () => {
+  const cookies = document.cookie.split('; ')
+  const tokenCookie = cookies.find(cookie => cookie.startsWith(`${TOKEN_COOKIE_NAME}=`))
+
+  if (tokenCookie) {
+    const [, token] = tokenCookie.split('=')
+    return token
+  }
+
+  return null
+}
