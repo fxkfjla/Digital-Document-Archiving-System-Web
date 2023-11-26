@@ -87,12 +87,6 @@ const FileItem = ({ id, caption, timestamp, size}) => {
           <Button variant="primary" onClick={downloadFile}>
             Download PDF
           </Button>
-          {/* <a
-            href={pdfContent && URL.createObjectURL(new Blob([pdfContent], { type: 'application/pdf' }))}
-            download={`${caption}.pdf`}
-            className="btn btn-primary"
-            onClick={closeModal}
-          ></a> */}
         </Modal.Footer>
       </Modal>
     </div>

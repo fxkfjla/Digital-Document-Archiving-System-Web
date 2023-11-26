@@ -7,58 +7,32 @@ import Register from 'src/components/auth/Register'
 import PrivateRoutes from 'src/utils/PrivateRoutes'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { useState } from 'react'
 
 function App() {
+  const [searchResults, setSearchResults] = useState([]);
+
+  const onSearch = (results) => {
+    setSearchResults(results)
+  }
 
   return (
     <div className='App'>
       <Router>
         <Routes>
           <Route element={( <>
-            <Header /> 
+            <Header onSearch={onSearch}/> 
             <div className="App__Main">
               <PrivateRoutes />
             </div> 
             </> )}>
-            <Route element={ <FilesView />} path="/" exact />
+            <Route element={ <FilesView searchResults={searchResults} /> } path="/" exact />
           </Route>
           <Route element={ <Login /> } path="/login" />
           <Route element={ <Register /> } path="/register" />
         </Routes>
       </Router>
     </div>
-    // <div className='App'>
-    //   <Router>
-    //     <div className="App__Main">
-    //       <Routes>
-    //         <Route element={ <PrivateRoutes /> }>
-    //           <Route element={ <Header /> } path="/" />
-    //           <Route element={ <FilesView />} path="/" exact />
-    //         </Route>
-    //       </Routes>
-    //     </div>
-    //     <Routes>
-    //       <Route element={ <Login /> } path="/login" />
-    //       <Route element={ <Register /> } path="/register" />
-    //     </Routes>
-    //   </Router>
-    // </div>
-    // <div className='App'>
-    // {
-    //   user ? (
-    //     <>
-    //       <Header />
-    //       <div className="App__Main">
-    //         <FilesView />
-    //       </div>
-    //     </>
-    //   ) : (
-    //     <>
-    //       <Login />
-    //     </>
-    //   )
-    // }
-    // </div> 
   )
 }
 

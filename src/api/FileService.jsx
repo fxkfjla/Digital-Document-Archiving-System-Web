@@ -34,6 +34,8 @@ fileService.interceptors.response.use(
 
 export const download = (id) => fileService.get('/download?id=' + id, { responseType: 'arraybuffer' })
 
-export const findAllByUserEmail = (userEmail) => fileService.get('/all/user?userEmail=' + userEmail)
+export const findAllForUser = () => fileService.get('/all')
+
+export const search = (name) => fileService.get('/search?name=' + name)
 
 export default fileService

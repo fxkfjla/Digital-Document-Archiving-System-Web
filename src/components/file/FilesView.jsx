@@ -1,24 +1,31 @@
 import 'src/styles/fileView.sass'
 import FileItem from 'src/components/file/FileItem'
 import FileCard from 'src/components/file/FileCard'
-import { findAllByUserEmail } from 'src/api/FileService'
+import { findAllForUser } from 'src/api/FileService'
 import { useUser } from 'src/context/UserContext'
 
 import React, { useState, useEffect } from 'react'
 import Sidebar from 'src/components/sidebar/Sidebar'
 
-const FilesView = () => {
-  const { user } = useUser()
+const FilesView = ({ searchResults }) => {
+  // const { user } = useUser()
   const [files, setFiles] = useState([])
 
   useEffect(() => {
     async function fetchData() {
-      const response = await findAllByUserEmail(user.sub)
-      setFiles(response.data.data)
+      if(searchResults.length > 0)
+      {
+        setFiles(searchResults)
+      }
+      else
+      {
+        const response = await findAllForUser()
+        setFiles(response.data.data)
+      }
     }
 
     fetchData()
-  }, [user])
+  }, [searchResults])
 
   return (
     <div className='FilesView'>

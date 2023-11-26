@@ -28,3 +28,12 @@ export const getTokenFromCookie = () => {
 
   return null
 }
+
+export const removeTokenFromCookie = () => {
+  const tokenCookie = document.cookie.split('; ').find(cookie => cookie.startsWith(`${TOKEN_COOKIE_NAME}=`));
+
+  if (tokenCookie) {
+    const [, token] = tokenCookie.split('=');
+    document.cookie = `${TOKEN_COOKIE_NAME}=/`;
+  }
+}
