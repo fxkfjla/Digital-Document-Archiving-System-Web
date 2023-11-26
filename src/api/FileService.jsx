@@ -34,6 +34,8 @@ fileService.interceptors.response.use(
 
 export const download = (id) => fileService.get('/download?id=' + id, { responseType: 'arraybuffer' })
 
+export const deleteFile = (id) => fileService.get('/delete?id=' + id)
+
 export const findAllForUser = () => fileService.get('/all')
 
 export const search = (name) => fileService.get('/search?name=' + name)

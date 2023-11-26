@@ -2,13 +2,13 @@ import 'src/styles/fileItem.sass'
 
 import { download } from 'src/api/FileService'
 
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { FileEarmarkFill } from 'react-bootstrap-icons'
 import { Modal, Button } from 'react-bootstrap'
 
 const monthNames = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
 
-const FileItem = ({ id, caption, timestamp, size}) => {
+const FileItem = ({ id, caption, timestamp, size, handleFileSelectChange, resetSelectMode}) => {
   timestamp = new Date(timestamp)
   const fileDate = `${timestamp?.getDate()} ${monthNames[timestamp?.getMonth()]} ${timestamp?.getFullYear()}`
 
@@ -27,6 +27,11 @@ const FileItem = ({ id, caption, timestamp, size}) => {
 
   const [modalShow, setModalShow] = useState(false)
   const [pdfContent, setPdfContent] = useState(null)
+  const [selectMode, setSelectMode] = useState(false)
+
+  useEffect(() => {
+    setSelectMode(false)
+  }, [resetSelectMode])
 
   const openModal = useCallback(async () => {
     const response = await download(id)
@@ -38,6 +43,30 @@ const FileItem = ({ id, caption, timestamp, size}) => {
   const closeModal = useCallback(() => {
     setModalShow(false)
   }, []);
+
+  function onFileClick() {
+    const [click, setClick] = useState(0);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            // simple click
+            if (click === 1) {
+              setSelectMode(!selectMode)
+              handleFileSelectChange(id)  
+            }
+
+            setClick(0);
+        }, 150);
+
+        if (click === 2) 
+          openModal()
+
+        return () => clearTimeout(timer);
+        
+    }, [click]);
+
+    return () => setClick(prev => prev + 1);
+  }
 
   const downloadFile = useCallback(async () => {
     const response = await download(id);
@@ -56,9 +85,9 @@ const FileItem = ({ id, caption, timestamp, size}) => {
   }, [id, caption, closeModal])
 
   return (
-    <div className="FileItem">
+    <div className={`FileItem${selectMode ? '--Highlighted' : ''}`}>
       <div>
-        <div className="FileItem--Left" onClick={openModal} style={{cursor: 'pointer'}}>
+        <div className="FileItem--Left" onClick={onFileClick()} style={{cursor: 'pointer'}}>
           <FileEarmarkFill />
           <p>{caption}</p>
         </div>
