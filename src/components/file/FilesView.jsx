@@ -1,33 +1,67 @@
 import 'src/styles/fileView.sass'
 import FileItem from 'src/components/file/FileItem'
-import FileCard from 'src/components/file/FileCard'
 import { findAllForUser, download, deleteFile } from 'src/api/FileService'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { Download, Trash, XCircle } from 'react-bootstrap-icons';
-import Sidebar from 'src/components/sidebar/Sidebar'
-import { Button } from 'react-bootstrap'
+import { Download, Trash, XCircle, ArrowUp, ArrowDown } from 'react-bootstrap-icons';
+import { Pagination } from 'react-bootstrap';
 
 const FilesView = ({ searchResults }) => {
   const [files, setFiles] = useState([])
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
   const [selectedFiles, setSelectedFiles] = useState([])
   const [resetSelectMode, setResetSelectMode] = useState(false)
+  const [sortOrder, setSortOrder] = useState('asc') 
+  const [sortBy, setSortBy] = useState('lastModified')
 
   useEffect(() => {
     async function fetchData() {
-      if(searchResults.length > 0)
-      {
-        setFiles(searchResults)
+
+      if(searchResults[0].length > 0) {
+        setFiles(searchResults[0])
+        setTotalPages(searchResults[1])
       }
-      else
-      {
-        const response = await findAllForUser()
-        setFiles(response.data.data)
+      else {
+        const response = await findAllForUser(sortBy, sortOrder, currentPage)
+        const data = response.data.data
+
+        setFiles(data.content)
+        setTotalPages(data.totalPages)
       }
     }
 
     fetchData()
   }, [searchResults])
+
+  const handleSortBy = async (value) => {
+    let newSortBy
+    let newSortOrder
+
+    if(sortBy === value && sortOrder === 'desc') {
+      newSortBy = 'lastModified'
+      newSortOrder = 'asc'
+    }
+    else if(sortBy === value) {
+      newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc'
+    }
+    else {
+      newSortBy = value
+      newSortOrder = 'asc'
+    }
+
+    if(newSortBy) {
+      setSortBy(newSortBy)
+    }
+
+    setSortOrder(newSortOrder)
+
+    const response = await findAllForUser(newSortBy, newSortOrder, currentPage)
+    const data = response.data.data
+
+    setFiles(data.content)
+    setTotalPages(data.totalPages)
+  }
 
   const handleFileSelectChange = (fileId) => {
     if (selectedFiles.includes(fileId)) {
@@ -67,8 +101,20 @@ const FilesView = ({ searchResults }) => {
         selectedFiles.map(async id => {
           handleUnselect()
           await deleteFile(id)
-          const response = await findAllForUser()
-          setFiles(response.data.data)
+          // const response = await findAllForUser(sortBy, sortOrder, currentPage)
+          // setFiles(response.data.data.content)
+          // setTotalPages(response.data.data.totalPages)
+          if(searchResults[0].length > 0) {
+            setFiles(searchResults[0])
+            setTotalPages(searchResults[1])
+          }
+          else {
+            const response = await findAllForUser(sortBy, sortOrder, currentPage)
+            const data = response.data.data
+
+            setFiles(data.content)
+            setTotalPages(data.totalPages)
+          }
         })
       );
     } catch (error) {
@@ -81,16 +127,42 @@ const FilesView = ({ searchResults }) => {
     setResetSelectMode(!resetSelectMode)
   }
 
+  const handlePageChange = async (newPage) => {
+    if (newPage < 0) {
+      newPage = 0
+    }
+    else if (newPage >= totalPages) {
+      newPage = totalPages - 1
+    }
+
+    setCurrentPage(newPage)
+  
+    const response = await findAllForUser(sortBy, sortOrder, newPage)
+    const data = response.data.data
+  
+    setFiles(data.content);
+    setTotalPages(data.totalPages)
+  }
+
+  const renderPaginationItems = () => {
+    const visiblePages = []
+    const pagesToShow = 3
+    const startPage = Math.max(currentPage - 1, 0)
+    const endPage = Math.min(startPage + pagesToShow - 1, totalPages - 1)
+  
+    for (let i = startPage; i <= endPage; i++) {
+      visiblePages.push(
+        <Pagination.Item key={i} active={i === currentPage} onClick={() => handlePageChange(i)}>
+          {i + 1}
+        </Pagination.Item>
+      );
+    }
+  
+    return visiblePages;
+  };
+
   return ( 
     <div className='FilesView'>
-      {/* <Sidebar /> */}
-      {/* <div className='FilesView__Row'>
-        {
-          files.slice(0, 5).map((item, index) => (
-            <FileCard name={item.name} key={index}/>
-          ))
-        }
-      </div> */}
       {selectedFiles.length > 0 ? (
       <div className="FilesView__SelectionBar">
         <p>{selectedFiles.length} File(s) selected</p>
@@ -103,11 +175,20 @@ const FilesView = ({ searchResults }) => {
       ) : (
       <div className="FilesView__Titles">
         <div className="FilesView__Titles--Left">
-          <p>Name</p>
+          <p onClick={ () => handleSortBy('name') }>Name {sortBy === 'name' && (
+              <span>{ sortOrder === 'asc' ? <ArrowDown /> : <ArrowUp /> }</span>
+            )}
+          </p>
         </div> 
         <div className="FilesView__Titles--Right">
-          <p>Last Modified</p>
-          <p>Files size</p>
+          <p onClick={ () => handleSortBy('lastModified') }>Last Modified {sortBy === 'lastModified' && (
+              <span>{ sortOrder === 'asc' ? <ArrowDown /> : <ArrowUp /> }</span>
+            )}
+          </p>
+          <p onClick={ () => handleSortBy('size') }>Files size {sortBy === 'size' && (
+              <span>{ sortOrder === 'asc' ? <ArrowDown /> : <ArrowUp /> }</span>
+            )}
+          </p>
         </div>
       </div>
       )}
@@ -124,6 +205,17 @@ const FilesView = ({ searchResults }) => {
           />
         ))
       }
+      {totalPages > 1 && (
+        <div className="d-flex justify-content-center mt-3">
+          <Pagination>
+            <Pagination.First onClick={() => handlePageChange(0)} />
+            <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} />
+              {renderPaginationItems()}
+            <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} />
+            <Pagination.Last onClick={() => handlePageChange(totalPages - 1)} />
+          </Pagination>
+        </div>
+      )}
     </div>
   )
 }

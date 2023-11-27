@@ -11,9 +11,11 @@ import { useState } from 'react'
 
 function App() {
   const [searchResults, setSearchResults] = useState([]);
+  const [totalPages, setTotalPages] = useState(0)
 
-  const onSearch = (results) => {
+  const onSearch = (results, totalPages) => {
     setSearchResults(results)
+    setTotalPages(totalPages)
   }
 
   return (
@@ -26,7 +28,7 @@ function App() {
               <PrivateRoutes />
             </div> 
             </> )}>
-            <Route element={ <FilesView searchResults={searchResults} /> } path="/" exact />
+            <Route element={ <FilesView searchResults={[searchResults, totalPages]} /> } path="/" exact />
           </Route>
           <Route element={ <Login /> } path="/login" />
           <Route element={ <Register /> } path="/register" />

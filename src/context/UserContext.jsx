@@ -1,4 +1,3 @@
-import { jwtDecode } from 'jwt-decode';
 import React, { createContext, useContext, useState } from 'react';
 import { getTokenFromCookie, removeTokenFromCookie } from 'src/utils/CookieManager';
 
@@ -9,10 +8,17 @@ export const useUser = () => useContext(UserContext)
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     const token = getTokenFromCookie()
+    const parseJwt = (token) => {
+      try {
+        return JSON.parse(atob(token.split(".")[1]));
+      } catch (e) {
+        return null;
+      }
+    };
 
     if(token) {
       try {
-        const decodedToken = jwtDecode(token, {header: true})
+        const decodedToken = parseJwt(token)
 
         if(decodedToken.exp * 1000 < Date.now()) {
           removeTokenFromCookie()
