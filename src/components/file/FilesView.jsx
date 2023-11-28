@@ -1,6 +1,6 @@
 import 'src/styles/fileView.sass'
 import FileItem from 'src/components/file/FileItem'
-import { findAllForUser, download, deleteFile } from 'src/api/FileService'
+import { findAllForUser, download, deleteFile, search } from 'src/api/FileService'
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { Download, Trash, XCircle, ArrowUp, ArrowDown } from 'react-bootstrap-icons';
@@ -14,13 +14,14 @@ const FilesView = ({ searchResults }) => {
   const [resetSelectMode, setResetSelectMode] = useState(false)
   const [sortOrder, setSortOrder] = useState('asc') 
   const [sortBy, setSortBy] = useState('lastModified')
+  const [searchString, setSearchString] = useState('')
 
   useEffect(() => {
     async function fetchData() {
 
-      if(searchResults[0].length > 0) {
-        setFiles(searchResults[0])
-        setTotalPages(searchResults[1])
+      if(searchResults[1].length > 0) {
+        setFiles(searchResults[1])
+        setTotalPages(searchResults[2])
       }
       else {
         const response = await findAllForUser(sortBy, sortOrder, currentPage)
@@ -101,12 +102,12 @@ const FilesView = ({ searchResults }) => {
         selectedFiles.map(async id => {
           handleUnselect()
           await deleteFile(id)
-          // const response = await findAllForUser(sortBy, sortOrder, currentPage)
-          // setFiles(response.data.data.content)
-          // setTotalPages(response.data.data.totalPages)
-          if(searchResults[0].length > 0) {
-            setFiles(searchResults[0])
-            setTotalPages(searchResults[1])
+          if(searchResults[1].length > 0) {
+            const response = await search(searchResults[0], sortBy, sortOrder, currentPage)
+            const data = response.data.data
+
+            setFiles(data.content)
+            setTotalPages(data.totalPages)
           }
           else {
             const response = await findAllForUser(sortBy, sortOrder, currentPage)

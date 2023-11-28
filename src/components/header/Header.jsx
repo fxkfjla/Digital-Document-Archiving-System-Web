@@ -12,7 +12,7 @@ const Header = ({ onSearch }) => {
     e.preventDefault()
 
     const response = await search(searchString)
-    onSearch(response.data.data.content, response.data.data.totalPages)
+    onSearch(searchString, response.data.data.content, response.data.data.totalPages)
   }
 
   return (
