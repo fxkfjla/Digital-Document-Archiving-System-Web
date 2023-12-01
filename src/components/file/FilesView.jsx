@@ -26,6 +26,7 @@ const FilesView = ({ searchResults }) => {
       else {
         const response = await findAllForUser(sortBy, sortOrder, currentPage)
         const data = response.data.data
+        console.log(response)
 
         setFiles(data.content)
         setTotalPages(data.totalPages)
@@ -200,6 +201,8 @@ const FilesView = ({ searchResults }) => {
             caption={item.name} 
             timestamp={item.lastModified}
             size={item.size}
+            description={item.description}
+            tags={item.tags}
             key={index} 
             handleFileSelectChange={handleFileSelectChange}
             resetSelectMode={resetSelectMode}

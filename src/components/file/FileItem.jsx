@@ -4,11 +4,11 @@ import { download } from 'src/api/FileService'
 
 import React, { useCallback, useState, useEffect } from 'react'
 import { FileEarmarkFill } from 'react-bootstrap-icons'
-import { Modal, Button } from 'react-bootstrap'
+import { Modal, Button, Badge } from 'react-bootstrap'
 
 const monthNames = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
 
-const FileItem = ({ id, caption, timestamp, size, handleFileSelectChange, resetSelectMode}) => {
+const FileItem = ({ id, caption, timestamp, size, description, tags, handleFileSelectChange, resetSelectMode}) => {
   timestamp = new Date(timestamp)
   const fileDate = `${timestamp?.getDate()} ${monthNames[timestamp?.getMonth()]} ${timestamp?.getFullYear()}`
 
@@ -98,19 +98,38 @@ const FileItem = ({ id, caption, timestamp, size, handleFileSelectChange, resetS
         </div>
       </div>
 
-      <Modal show={modalShow} onHide={closeModal} dialogClassName='modal-lg'>
+      <Modal show={modalShow} onHide={closeModal} dialogClassName='modal-xl'>
         <Modal.Header closeButton>
           <Modal.Title>{caption}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {pdfContent && (
-            <iframe
-              title="PDF Viewer"
-              src={pdfContent && URL.createObjectURL(new Blob([pdfContent], { type: 'application/pdf' }))}
-              width="100%"
-              height="650px"
-            />
-          )}
+        <div className="ModalContent">
+            <div className="PdfContent">
+              {pdfContent && (
+                <iframe
+                  title="PDF Viewer"
+                  src={pdfContent && URL.createObjectURL(new Blob([pdfContent], { type: 'application/pdf' }))}
+                  width="100%"
+                  height="650px"
+                />
+              )}
+            </div>
+
+            <div className="AdditionalInfo">
+              <p>Description: {description}</p>
+              {tags.length > 0 && (
+                <p>
+                  Tags: {' '}
+                  {tags.map(tag => (
+                    <Badge key={tag.id} variant="secondary" style={{ marginRight: '5px', marginBottom: '5px' }}>
+                      {tag.name}
+                    </Badge>
+                  ))}
+                </p>
+              )}
+              <p>Uploaded on: {timestamp?.getDate()}{"."}{timestamp?.getMonth() + 1}{"."}{timestamp?.getFullYear()}</p>
+            </div>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={downloadFile}>
