@@ -21,32 +21,32 @@ const Register = () => {
     <div className="Wrapper">
       <Form className="Auth__Form" onSubmit={(handleRegister)}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" 
+          <Form.Label>Adres email</Form.Label>
+          <Form.Control type="email" placeholder="Podaj email" 
             value={credentials.email}
             onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}/>
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password"
+          <Form.Label>Hasło</Form.Label>
+          <Form.Control type="password" placeholder="Podaj hasło"
             value={credentials.password}
             onChange={(e) => setCredentials({ ...credentials, password: e.target.value})}/>
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Repeat password</Form.Label>
-          <Form.Control type="password" placeholder="Repeat password"
+          <Form.Label>Powtórz hasło</Form.Label>
+          <Form.Control type="password" placeholder="Powtórz hasło"
             value={credentials.rePassword}
             onChange={(e) => setCredentials({ ...credentials, rePassword: e.target.value})}/>
         </Form.Group>
 
         <Link className="d-block mb-3" to="/login">
-          Login here
+          Masz już konto? Zaloguj się
         </Link>
 
         <Button className="Auth__Button mx-auto d-block width" variant="primary" type="submit">
-          Register
+          Zarejestruj
         </Button>
       </Form>
     </div>

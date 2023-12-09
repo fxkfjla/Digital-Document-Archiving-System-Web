@@ -1,14 +1,14 @@
 import 'src/styles/fileItem.sass'
 
-import { download } from 'src/api/FileService'
+import { download, editFile} from 'src/api/FileService'
 
 import React, { useCallback, useState, useEffect } from 'react'
 import { FileEarmarkFill } from 'react-bootstrap-icons'
-import { Modal, Button, Badge } from 'react-bootstrap'
+import { Modal, Button, Badge, Form } from 'react-bootstrap'
 
-const monthNames = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
+const monthNames = [ 'STY', 'LUT', 'MAR', 'KWI', 'MAJ', 'CZE', 'LIP', 'SIE', 'WRZ', 'PAZ', 'LIS', 'GRU' ]
 
-const FileItem = ({ id, caption, timestamp, size, description, tags, handleFileSelectChange, resetSelectMode}) => {
+const FileItem = ({ id, caption, timestamp, size, description, tags, handleFileSelectChange, resetSelectMode, onItemChange}) => {
   timestamp = new Date(timestamp)
   const fileDate = `${timestamp?.getDate()} ${monthNames[timestamp?.getMonth()]} ${timestamp?.getFullYear()}`
 
@@ -84,6 +84,30 @@ const FileItem = ({ id, caption, timestamp, size, description, tags, handleFileS
     closeModal()
   }, [id, caption, closeModal])
 
+  const [editModalShow, setEditModalShow] = useState(false)
+  const [newName, setNewName] = useState(caption)
+  const [newDescription, setNewDescription] = useState(description)
+  var array = []
+  tags.forEach(tag => array.push(tag.name))
+  const [newTags, setNewTags] = useState(array)
+
+  const openEditModal = useCallback(() => {
+    setEditModalShow(true)
+    setModalShow(false)
+  }, []);
+
+  const closeEditModal = useCallback(() => {
+    setEditModalShow(false)
+    openModal()
+  }, [])
+
+  const handleEditFile = useCallback(async () => {
+    await editFile(id, newName, newDescription, newTags)
+    onItemChange()
+
+    closeEditModal();
+  }, [closeEditModal, id, newName, newDescription, newTags]);
+
   return (
     <div className={`FileItem${selectMode ? '--Highlighted' : ''}`}>
       <div>
@@ -116,10 +140,10 @@ const FileItem = ({ id, caption, timestamp, size, description, tags, handleFileS
             </div>
 
             <div className="AdditionalInfo">
-              <p>Description: {description}</p>
+              <p>Opis: {description}</p>
               {tags.length > 0 && (
                 <p>
-                  Tags: {' '}
+                  Tagi: {' '}
                   {tags.map(tag => (
                     <Badge key={tag.id} variant="secondary" style={{ marginRight: '5px', marginBottom: '5px' }}>
                       {tag.name}
@@ -127,13 +151,41 @@ const FileItem = ({ id, caption, timestamp, size, description, tags, handleFileS
                   ))}
                 </p>
               )}
-              <p>Uploaded on: {timestamp?.getDate()}{"."}{timestamp?.getMonth() + 1}{"."}{timestamp?.getFullYear()}</p>
+              <p>Ostatnia modyfikacja: {timestamp?.getDate()}{"."}{timestamp?.getMonth() + 1}{"."}{timestamp?.getFullYear()}</p>
             </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
+          <Button variant="primary" onClick={openEditModal}>
+            Edytuj
+          </Button>
           <Button variant="primary" onClick={downloadFile}>
-            Download PDF
+            Pobierz PDF
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={editModalShow} onHide={closeEditModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Edycja pliku: {caption}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group>
+            <Form.Label>Nazwa:</Form.Label>
+            <Form.Control type="text" placeholder="Nazwa" defaultValue={caption} onChange={(e) => setNewName(e.target.value)} />
+          </Form.Group>
+          <Form.Group className='mt-3'>
+            <Form.Label>Opis:</Form.Label>
+            <Form.Control as="textarea" rows={3} placeholder="Opis" defaultValue={description} onChange={(e) => setNewDescription(e.target.value)} />
+          </Form.Group>
+          <Form.Group className='mt-3'>
+            <Form.Label>Tagi:</Form.Label>
+            <Form.Control text="textarea" placeholder="Tagi" defaultValue={tags.map(tag => tag.name).join(', ')}  onChange={(e) => setNewTags(e.target.value.split(',').map(tag => tag.trim()))} />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleEditFile}>
+            Zapisz
           </Button>
         </Modal.Footer>
       </Modal>

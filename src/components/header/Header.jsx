@@ -1,6 +1,6 @@
 import 'src/styles/header.sass'
 import UploadFile from "src/components/file/UploadFile";
-import { search } from 'src/api/FileService';
+import Logout from 'src/components/auth/Logout';
 
 import React, { useState } from 'react'
 import { Navbar, Nav, Form, FormControl } from 'react-bootstrap';
@@ -11,8 +11,7 @@ const Header = ({ onSearch }) => {
   const searchFiles = async (e) => {
     e.preventDefault()
 
-    const response = await search(searchString)
-    onSearch(searchString, response.data.data.content, response.data.data.totalPages)
+    onSearch(searchString)
   }
 
   return (
@@ -23,12 +22,13 @@ const Header = ({ onSearch }) => {
       </Navbar.Brand>
       <Form className="d-flex mx-auto" onSubmit={(e) => searchFiles(e)}>
         <FormControl 
-          type="text" className='search-bar' placeholder="Search" 
+          type="text" className='search-bar' placeholder="Szukaj" 
           value={searchString} onChange={(e) => setSearchString(e.target.value)}
         />
       </Form>
       <Nav.Item className='me-3'>
         <UploadFile />
+        <Logout />
       </Nav.Item>
     </Navbar>
   );

@@ -14,7 +14,7 @@ const UploadFile = () => {
     <>
       <Button variant="primary" onClick={showFileBrowser}>
         <Upload className='me-2'/>
-        Upload File
+        Prześlij plik 
       </Button>
       <input ref={inputFile} className="d-none" type="file" placeholder="UploadFile" accept=".xml" />
     </>

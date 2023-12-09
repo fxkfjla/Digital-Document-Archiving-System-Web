@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getTokenFromCookie, removeTokenFromCookie } from 'src/utils/CookieManager';
+import { getTokenFromCookie } from 'src/utils/CookieManager';
 
 const apiUrl = import.meta.env.VITE_API_FILE_URL
 
@@ -30,6 +30,8 @@ export const deleteFile = id => fileService.get('/delete?id=' + id)
 
 export const findAllForUser = (sortBy, sortDirection, page) => fileService.get('/all', { params: { sortBy: sortBy, sortDirection: sortDirection, page: page } })
 
-export const search = (name) => fileService.get('/search?name=' + name)
+export const search = (name, sortBy, sortDirection, page) => fileService.get('/search', { params: { name: name, sortBy: sortBy, sortDirection: sortDirection, page: page } })
+
+export const editFile = (id, name, description, tags) => fileService.put(`/edit/${id}`, {name: name, description: description, tags: tags});
 
 export default fileService

@@ -6,7 +6,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Download, Trash, XCircle, ArrowUp, ArrowDown } from 'react-bootstrap-icons';
 import { Pagination } from 'react-bootstrap';
 
-const FilesView = ({ searchResults }) => {
+const FilesView = ({searchString}) => {
   const [files, setFiles] = useState([])
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -14,27 +14,29 @@ const FilesView = ({ searchResults }) => {
   const [resetSelectMode, setResetSelectMode] = useState(false)
   const [sortOrder, setSortOrder] = useState('asc') 
   const [sortBy, setSortBy] = useState('lastModified')
-  const [searchString, setSearchString] = useState('')
+
+  async function fetchData(newSortBy, newSortOrder, newCurrentPage) {
+    var response = null
+
+    if(searchString.length > 0) {
+      response = await search(searchString, newSortBy, newSortOrder, newCurrentPage)
+    }
+    else {
+      response = await findAllForUser(newSortBy, newSortOrder, newCurrentPage)
+    }
+    const data = response.data.data
+
+    setFiles(data.content)
+    setTotalPages(data.totalPages)
+  }
 
   useEffect(() => {
-    async function fetchData() {
-
-      if(searchResults[1].length > 0) {
-        setFiles(searchResults[1])
-        setTotalPages(searchResults[2])
-      }
-      else {
-        const response = await findAllForUser(sortBy, sortOrder, currentPage)
-        const data = response.data.data
-        console.log(response)
-
-        setFiles(data.content)
-        setTotalPages(data.totalPages)
-      }
+    async function effectFetchData() {
+      fetchData(sortBy, sortOrder, 0)
     }
 
-    fetchData()
-  }, [searchResults])
+    effectFetchData()
+  }, [searchString])
 
   const handleSortBy = async (value) => {
     let newSortBy
@@ -58,11 +60,7 @@ const FilesView = ({ searchResults }) => {
 
     setSortOrder(newSortOrder)
 
-    const response = await findAllForUser(newSortBy, newSortOrder, currentPage)
-    const data = response.data.data
-
-    setFiles(data.content)
-    setTotalPages(data.totalPages)
+    fetchData(newSortBy, newSortOrder, currentPage)
   }
 
   const handleFileSelectChange = (fileId) => {
@@ -103,20 +101,7 @@ const FilesView = ({ searchResults }) => {
         selectedFiles.map(async id => {
           handleUnselect()
           await deleteFile(id)
-          if(searchResults[1].length > 0) {
-            const response = await search(searchResults[0], sortBy, sortOrder, currentPage)
-            const data = response.data.data
-
-            setFiles(data.content)
-            setTotalPages(data.totalPages)
-          }
-          else {
-            const response = await findAllForUser(sortBy, sortOrder, currentPage)
-            const data = response.data.data
-
-            setFiles(data.content)
-            setTotalPages(data.totalPages)
-          }
+          fetchData(sortBy, sortOrder, currentPage)
         })
       );
     } catch (error) {
@@ -139,11 +124,7 @@ const FilesView = ({ searchResults }) => {
 
     setCurrentPage(newPage)
   
-    const response = await findAllForUser(sortBy, sortOrder, newPage)
-    const data = response.data.data
-  
-    setFiles(data.content);
-    setTotalPages(data.totalPages)
+    fetchData(sortBy, sortOrder, newPage)
   }
 
   const renderPaginationItems = () => {
@@ -167,7 +148,7 @@ const FilesView = ({ searchResults }) => {
     <div className='FilesView'>
       {selectedFiles.length > 0 ? (
       <div className="FilesView__SelectionBar">
-        <p>{selectedFiles.length} File(s) selected</p>
+        <p>Wybrane pliki: {selectedFiles.length}</p>
         <div>
           <Download onClick={handleDownload} className="FilesView__SelectionBar__Icon" />
           <Trash onClick={handleDelete} className="FilesView__SelectionBar__Icon" />
@@ -177,17 +158,17 @@ const FilesView = ({ searchResults }) => {
       ) : (
       <div className="FilesView__Titles">
         <div className="FilesView__Titles--Left">
-          <p onClick={ () => handleSortBy('name') }>Name {sortBy === 'name' && (
+          <p onClick={ () => handleSortBy('name') }>Nazwa{sortBy === 'name' && (
               <span>{ sortOrder === 'asc' ? <ArrowDown /> : <ArrowUp /> }</span>
             )}
           </p>
         </div> 
         <div className="FilesView__Titles--Right">
-          <p onClick={ () => handleSortBy('lastModified') }>Last Modified {sortBy === 'lastModified' && (
+          <p onClick={ () => handleSortBy('lastModified') }>Ostatnia modyfikacja{sortBy === 'lastModified' && (
               <span>{ sortOrder === 'asc' ? <ArrowDown /> : <ArrowUp /> }</span>
             )}
           </p>
-          <p onClick={ () => handleSortBy('size') }>Files size {sortBy === 'size' && (
+          <p onClick={ () => handleSortBy('size') }>Rozmiar pliku{sortBy === 'size' && (
               <span>{ sortOrder === 'asc' ? <ArrowDown /> : <ArrowUp /> }</span>
             )}
           </p>
@@ -206,6 +187,7 @@ const FilesView = ({ searchResults }) => {
             key={index} 
             handleFileSelectChange={handleFileSelectChange}
             resetSelectMode={resetSelectMode}
+            onItemChange={fetchData}
           />
         ))
       }

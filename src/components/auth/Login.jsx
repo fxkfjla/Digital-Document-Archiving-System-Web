@@ -35,25 +35,25 @@ const Login = () => {
     <div className='Wrapper'>
       <Form className="Auth__Form" onSubmit={(handleLogin)}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" 
+          <Form.Label>Adres email</Form.Label>
+          <Form.Control type="email" placeholder="Podaj email" 
             value={credentials.email}
             onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}/>
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password"
+          <Form.Label>Hasło</Form.Label>
+          <Form.Control type="password" placeholder="Podaj hasło"
             value={credentials.password}
             onChange={(e) => setCredentials({ ...credentials, password: e.target.value})}/>
         </Form.Group>
 
         <Link className="d-block mb-3" to="/register">
-          Sign up here
+          Nie masz konta? Zarejestruj się
         </Link>
 
         <Button className="Auth__Button mx-auto d-block width" variant="primary" type="submit">
-          Login
+          Zaloguj
         </Button>
       </Form>
     </div>

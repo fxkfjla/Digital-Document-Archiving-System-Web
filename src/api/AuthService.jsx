@@ -29,6 +29,6 @@ export const register = (credentials) => authService.post('/register',
 export const login = (credentials) => authService.post('/login', 
   { email: credentials.email, password: credentials.password })
 
-export const logout = (token) => authService.post('/logout', token)
+export const logout = (token) => authService.post('/logout', { token: token })
 
 export default authService
