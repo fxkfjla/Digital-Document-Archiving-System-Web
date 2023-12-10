@@ -11,9 +11,14 @@ import { useState } from 'react'
 
 function App() {
   const [searchString, setSearchString] = useState('')
+  const [doFileUpload, setDoFileUpload] = useState(false)
 
   const onSearch = (searchString) => {
     setSearchString(searchString)
+  }
+
+  const onDoFileUpload = (state) => {
+    setDoFileUpload(state)
   }
 
   return (
@@ -21,12 +26,12 @@ function App() {
       <Router>
         <Routes>
           <Route element={( <>
-            <Header onSearch={onSearch}/> 
+            <Header onSearch={onSearch} onDoFileUpload={onDoFileUpload}/> 
             <div className="App__Main">
               <PrivateRoutes />
             </div> 
             </> )}>
-            <Route element={ <FilesView searchString={searchString} /> } path="/" exact />
+            <Route element={ <FilesView searchString={searchString} doFileUpload={doFileUpload} /> } path="/" exact />
           </Route>
           <Route element={ <Login /> } path="/login" />
           <Route element={ <Register /> } path="/register" />

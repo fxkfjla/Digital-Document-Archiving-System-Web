@@ -5,7 +5,7 @@ import Logout from 'src/components/auth/Logout';
 import React, { useState } from 'react'
 import { Navbar, Nav, Form, FormControl } from 'react-bootstrap';
 
-const Header = ({ onSearch }) => {
+const Header = ({ onSearch, onDoFileUpload }) => {
   const [searchString, setSearchString] = useState('')
 
   const searchFiles = async (e) => {
@@ -27,7 +27,7 @@ const Header = ({ onSearch }) => {
         />
       </Form>
       <Nav.Item className='me-3'>
-        <UploadFile />
+        <UploadFile onDoFileUpload={ onDoFileUpload }/>
         <Logout />
       </Nav.Item>
     </Navbar>

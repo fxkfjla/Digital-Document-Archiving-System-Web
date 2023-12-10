@@ -19,6 +19,13 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault()
 
+    if(credentials.email.length === 0) {
+
+    }
+    else if (credentials.password.length === 0) {
+
+    } 
+
     const response = await login(credentials)
     const token = response.data.data
     const decoded = jwtDecode(token)
@@ -28,7 +35,11 @@ const Login = () => {
     setCookie(TOKEN_COOKIE_NAME, token, 
       { path: '/', maxAge: decoded.exp * 1000, sameSite: 'None', secure: true })
     
-    navigate('/')
+    if(response.status === 200)
+      navigate('/')
+    else {
+      // popup co jest niepoprawne
+    }
   }
 
   return (

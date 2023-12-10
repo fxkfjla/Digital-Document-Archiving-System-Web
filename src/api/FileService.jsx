@@ -21,6 +21,7 @@ fileService.interceptors.response.use(
   response => response,
   error => {
     window.location.href = '/login';
+    return error
   }
 )
 
@@ -32,6 +33,18 @@ export const findAllForUser = (sortBy, sortDirection, page) => fileService.get('
 
 export const search = (name, sortBy, sortDirection, page) => fileService.get('/search', { params: { name: name, sortBy: sortBy, sortDirection: sortDirection, page: page } })
 
-export const editFile = (id, name, description, tags) => fileService.put(`/edit/${id}`, {name: name, description: description, tags: tags});
+export const editFile = (id, name, description, tags) => fileService.put(`/edit/${id}`, {name: name, description: description, tags: tags})
+
+export const upload = (file, name, description, tags) => {
+  const formData = new FormData()
+
+  formData.append('file', file)
+  formData.append('name', name)
+  formData.append('description', description)
+
+  tags.forEach(tag => formData.append('tags', tag))
+
+  return fileService.post('/upload', formData)
+};
 
 export default fileService

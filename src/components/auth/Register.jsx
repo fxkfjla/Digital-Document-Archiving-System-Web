@@ -12,9 +12,23 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault()
 
-    await register(credentials)
+    if(credentials.email.length === 0) {
 
-    navigate('/login')
+    }
+    else if (credentials.password.length === 0) {
+
+    } 
+    else if (credentials.rePassword.length === 0) {
+
+    }
+
+    const response = await register(credentials)
+
+    if(response.status === 200)
+      navigate('/login')
+    else {
+      // popup co jest niepoprawne
+    }
   }
 
   return (

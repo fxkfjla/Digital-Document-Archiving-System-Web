@@ -179,7 +179,7 @@ const FileItem = ({ id, caption, timestamp, size, description, tags, handleFileS
             <Form.Control as="textarea" rows={3} placeholder="Opis" defaultValue={description} onChange={(e) => setNewDescription(e.target.value)} />
           </Form.Group>
           <Form.Group className='mt-3'>
-            <Form.Label>Tagi:</Form.Label>
+            <Form.Label>Tagi: (podawane po przecinku)</Form.Label>
             <Form.Control text="textarea" placeholder="Tagi" defaultValue={tags.map(tag => tag.name).join(', ')}  onChange={(e) => setNewTags(e.target.value.split(',').map(tag => tag.trim()))} />
           </Form.Group>
         </Modal.Body>

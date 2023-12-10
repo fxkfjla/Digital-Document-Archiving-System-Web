@@ -6,7 +6,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Download, Trash, XCircle, ArrowUp, ArrowDown } from 'react-bootstrap-icons';
 import { Pagination } from 'react-bootstrap';
 
-const FilesView = ({searchString}) => {
+const FilesView = ({searchString, doFileUpload}) => {
   const [files, setFiles] = useState([])
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -36,7 +36,7 @@ const FilesView = ({searchString}) => {
     }
 
     effectFetchData()
-  }, [searchString])
+  }, [searchString, doFileUpload])
 
   const handleSortBy = async (value) => {
     let newSortBy

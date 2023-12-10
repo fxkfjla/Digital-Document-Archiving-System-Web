@@ -10,17 +10,7 @@ const authService = axios.create({
 
 authService.interceptors.response.use(
   response => response,
-  error => {
-      if (error.response) {
-        console.error('Response Data:', error.response.data);
-        console.error('Status Code:', error.response.status);
-      } else if (error.request) {
-        console.error('No response received:', error.request);
-      } else {
-        console.error('Error:', error.message);
-      }
-      console.error('Error Config:', error.config);
-  }
+  error => error
 )
 
 export const register = (credentials) => authService.post('/register', 
