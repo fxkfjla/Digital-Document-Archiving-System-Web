@@ -8,7 +8,8 @@ import { Modal, Button, Badge, Form } from 'react-bootstrap'
 
 const monthNames = [ 'STY', 'LUT', 'MAR', 'KWI', 'MAJ', 'CZE', 'LIP', 'SIE', 'WRZ', 'PAZ', 'LIS', 'GRU' ]
 
-const FileItem = ({ id, caption, timestamp, size, description, tags, handleFileSelectChange, resetSelectMode, onItemChange}) => {
+const FileItem = ({ id, caption, timestamp, size, description, tags, handleFileSelectChange, resetSelectMode, onItemChange,
+  sortBy, sortOrder, currentPage}) => {
   timestamp = new Date(timestamp)
   const fileDate = `${timestamp?.getDate()} ${monthNames[timestamp?.getMonth()]} ${timestamp?.getFullYear()}`
 
@@ -103,7 +104,7 @@ const FileItem = ({ id, caption, timestamp, size, description, tags, handleFileS
 
   const handleEditFile = useCallback(async () => {
     await editFile(id, newName, newDescription, newTags)
-    onItemChange()
+    onItemChange(sortBy, sortOrder, currentPage)
 
     closeEditModal();
   }, [closeEditModal, id, newName, newDescription, newTags]);

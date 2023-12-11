@@ -85,7 +85,7 @@ const Register = () => {
           </Form.Control.Feedback>
        </Form.Group>
 
-       <Link className="d-block mb-3" to="/login">
+       <Link className="Link d-block mb-3" to="/login">
           Masz już konto? Zaloguj się
         </Link>
 

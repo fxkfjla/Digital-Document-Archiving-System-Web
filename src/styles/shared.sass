@@ -1,3 +1,40 @@
+$body-bg: #f7f7f7
 
+$primary-bg: #CBB8A9
+$primary-fg: #252525
+$navbar-bg: #444
+$border-col: #c4ab97
+
+$pagination-color: $primary-fg
+$pagination-focus-color: $primary-fg
+$pagination-focus-bg: $primary-bg 
+$pagination-focus-box-shadow: $primary-bg 
+$pagination-hover-color: darken($primary-fg, 10%)
+$pagination-hover-bg: darken($primary-bg, 10%)
+$pagination-hover-border-color: darken($border-col, 10%)
+$pagination-active-color: $primary-fg
+$pagination-active-bg: $primary-bg
+$pagination-active-border-color: $border-col
+
+$input-bg: #f7f0eb
+$input-color: $primary-fg
+$input-border-color: $border-col
+$input-focus-color: darken($primary-fg, 10%)
+$input-focus-border-color: darken($border-col, 10%)
+$input-focus-box-shadow: $primary-bg
 
 @import '/node_modules/bootstrap/scss/bootstrap.scss'
+
+.btn-primary
+  background-color: $primary-bg
+  border-color: $border-col
+  color: $primary-fg
+  border-radius: 10px
+  &:hover
+    background-color: darken($primary-bg, 10%)
+    border-color: darken($border-col, 10%)
+    color: darken($primary-fg, 10%)
+
+
+.navbar
+  background-color: $navbar-bg

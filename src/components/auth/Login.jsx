@@ -79,7 +79,7 @@ const Login = () => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Link className="d-block mb-3" to="/register">
+        <Link className="Link d-block mb-3" to="/register">
           Nie masz konta? Zarejestruj się
         </Link>
 

@@ -3,7 +3,7 @@ import { Upload } from 'react-bootstrap-icons'
 import { Button, Modal, Form } from 'react-bootstrap';
 import { upload } from 'src/api/FileService';
 
-const UploadFile = ({onDoFileUpload}) => {
+const UploadFile = ({ fetchData, sortBy, sortOrder, currentPage }) => {
   const [file, setFile] = useState()
   const inputFile = useRef(null) 
 
@@ -16,7 +16,6 @@ const UploadFile = ({onDoFileUpload}) => {
 
   const showFileBrowser = () => {
     inputFile.current.click();
-    onDoFileUpload(false)
   }
 
   const handleUpload = (e) => {
@@ -30,7 +29,7 @@ const UploadFile = ({onDoFileUpload}) => {
   const handleEditFile = async () => {
     await upload(file, name, description, tags)
 
-    onDoFileUpload(true)
+    fetchData(sortBy, sortOrder, currentPage)
     setEditModalShow(false)
   }
 

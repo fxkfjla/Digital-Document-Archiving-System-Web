@@ -19,7 +19,7 @@
   cursor: pointer
 
 .FilesView__Titles>div>p:hover
-  color: #007bff
+  color: darken(#CBB8A9, 10%)
 
 .FilesView__Titles--Left
   flex: 1
@@ -40,7 +40,7 @@
 
 .FilesView__SelectionBar>p
   margin: 0
-  marign-left: 10px
+  margin-left: 10px
   margin-right: 10px
 
 .FilesView__SelectionBar__Icon
@@ -49,6 +49,22 @@
   margin-right: 10px
 
 .FilesView__SelectionBar__Icon:hover
-  color: #007bff
-  
+  color: darken(#CBB8A9, 10%)
 
+.FilesView__Status
+  background-color: #f0f0f0
+  padding: 10px
+  text-align: center
+  width: 100%
+  max-width: 1300px
+  justify-content: space-between
+  display: flex
+  text-align: center
+  align-items: center
+  padding-left: 25px
+  padding-right: 25px
+  border-radius: 20px
+
+.FilesView__Status p
+  margin: 0
+  font-size: 14px  

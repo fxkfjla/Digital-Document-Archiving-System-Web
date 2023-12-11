@@ -5,7 +5,7 @@ import Logout from 'src/components/auth/Logout';
 import React, { useState } from 'react'
 import { Navbar, Nav, Form, FormControl } from 'react-bootstrap';
 
-const Header = ({ onSearch, onDoFileUpload }) => {
+const Header = ({ onSearch }) => {
   const [searchString, setSearchString] = useState('')
 
   const searchFiles = async (e) => {
@@ -15,21 +15,22 @@ const Header = ({ onSearch, onDoFileUpload }) => {
   }
 
   return (
-    <Navbar bg="light" expand="lg" className='justify-content-between'>
-      <Navbar.Brand className='ms-3'href="#">
-        <img src="" alt="" />
-        <span>DDAS</span>
-      </Navbar.Brand>
-      <Form className="d-flex mx-auto" onSubmit={(e) => searchFiles(e)}>
-        <FormControl 
-          type="text" className='search-bar' placeholder="Szukaj" 
-          value={searchString} onChange={(e) => setSearchString(e.target.value)}
-        />
-      </Form>
-      <Nav.Item className='me-3'>
-        <UploadFile onDoFileUpload={ onDoFileUpload }/>
-        <Logout />
-      </Nav.Item>
+    <Navbar expand="lg">
+      <div className="HeaderWrapper d-flex w-100 justify-content-between align-items-center">
+        <Navbar.Brand className='ms-3'href="#">
+          <img src="" alt="" />
+          <span>DDAS</span>
+        </Navbar.Brand>
+        <Form className="d-flex flex-grow-1 mx-auto" onSubmit={(e) => searchFiles(e)}>
+          <FormControl 
+            type="text" className='SearchBar' placeholder="Szukaj" 
+            value={searchString} onChange={(e) => setSearchString(e.target.value)}
+          />
+        </Form>
+        <Nav.Item className='me-3'>
+          <Logout />
+        </Nav.Item>
+      </div>
     </Navbar>
   );
 }

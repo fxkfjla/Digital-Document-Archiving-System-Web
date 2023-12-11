@@ -4,9 +4,10 @@ import { findAllForUser, download, deleteFile, search } from 'src/api/FileServic
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { Download, Trash, XCircle, ArrowUp, ArrowDown } from 'react-bootstrap-icons';
-import { Pagination } from 'react-bootstrap';
+import { Pagination, Spinner } from 'react-bootstrap';
+import UploadFile from './UploadFile';
 
-const FilesView = ({searchString, doFileUpload}) => {
+const FilesView = ({ searchString }) => {
   const [files, setFiles] = useState([])
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -14,8 +15,11 @@ const FilesView = ({searchString, doFileUpload}) => {
   const [resetSelectMode, setResetSelectMode] = useState(false)
   const [sortOrder, setSortOrder] = useState('asc') 
   const [sortBy, setSortBy] = useState('lastModified')
+  const [fileAmount, setFileAmount] = useState(0)
+  const [loading, setLoading] = useState(false)
 
   async function fetchData(newSortBy, newSortOrder, newCurrentPage) {
+    showLoadingSpinner()
     var response = null
 
     if(searchString.length > 0) {
@@ -28,6 +32,8 @@ const FilesView = ({searchString, doFileUpload}) => {
 
     setFiles(data.content)
     setTotalPages(data.totalPages)
+    setFileAmount(data.totalElements)
+    hideLoadingSpinner()
   }
 
   useEffect(() => {
@@ -36,7 +42,7 @@ const FilesView = ({searchString, doFileUpload}) => {
     }
 
     effectFetchData()
-  }, [searchString, doFileUpload])
+  }, [searchString])
 
   const handleSortBy = async (value) => {
     let newSortBy
@@ -101,9 +107,10 @@ const FilesView = ({searchString, doFileUpload}) => {
         selectedFiles.map(async id => {
           handleUnselect()
           await deleteFile(id)
-          fetchData(sortBy, sortOrder, currentPage)
         })
       );
+      fetchData(sortBy, sortOrder, 0)
+      setCurrentPage(0)
     } catch (error) {
       console.error('Error downloading files:', error)
     }
@@ -125,6 +132,15 @@ const FilesView = ({searchString, doFileUpload}) => {
     setCurrentPage(newPage)
   
     fetchData(sortBy, sortOrder, newPage)
+    handleUnselect()
+  }
+
+  function showLoadingSpinner() {
+    setLoading(true)
+  }
+
+  function hideLoadingSpinner() {
+    setLoading(false) 
   }
 
   const renderPaginationItems = () => {
@@ -188,20 +204,41 @@ const FilesView = ({searchString, doFileUpload}) => {
             handleFileSelectChange={handleFileSelectChange}
             resetSelectMode={resetSelectMode}
             onItemChange={fetchData}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            currentPage={currentPage}
           />
         ))
       }
-      {totalPages > 1 && (
-        <div className="d-flex justify-content-center mt-3">
+      <div className="fixed-bottom d-flex flex-column justify-content-center align-items-center mt-3 mb-2">
+        <div className="FilesView__Status mb-2">
+          <p>Wszystkie pliki: {fileAmount}</p>
+          <UploadFile fetchData={ fetchData } sortBy={ sortBy } sortOrder={ sortOrder } currentPage={ currentPage }/>
+        </div>
+        {totalPages > 1 && (
           <Pagination>
             <Pagination.First onClick={() => handlePageChange(0)} />
             <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} />
-              {renderPaginationItems()}
+            {renderPaginationItems()}
             <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} />
             <Pagination.Last onClick={() => handlePageChange(totalPages - 1)} />
           </Pagination>
-        </div>
-      )}
+        )}
+      </div>
+      <div className='text-center'>
+        {loading && (
+          <div
+            className="position-absolute top-50 start-50 translate-middle"
+            style={{ zIndex: 1000 }}
+          >
+            <div className="bg-dark-opacity p-3 rounded">
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
