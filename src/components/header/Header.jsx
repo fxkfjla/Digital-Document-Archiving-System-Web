@@ -3,7 +3,7 @@ import UploadFile from "src/components/file/UploadFile";
 import Logout from 'src/components/auth/Logout';
 
 import React, { useState } from 'react'
-import { Navbar, Nav, Form, FormControl } from 'react-bootstrap';
+import { Navbar, Nav, Form, FormControl, Container } from 'react-bootstrap';
 
 const Header = ({ onSearch }) => {
   const [searchString, setSearchString] = useState('')
@@ -18,8 +18,7 @@ const Header = ({ onSearch }) => {
     <Navbar expand="lg">
       <div className="HeaderWrapper d-flex w-100 justify-content-between align-items-center">
         <Navbar.Brand className='ms-3'href="#">
-          <img src="" alt="" />
-          <span>DDAS</span>
+          <img src="src/media/logo_ddas.png" height="80" alt="" className='mb-1'/>
         </Navbar.Brand>
         <Form className="d-flex flex-grow-1 mx-auto" onSubmit={(e) => searchFiles(e)}>
           <FormControl 
