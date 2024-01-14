@@ -1,0 +1,38 @@
+.FileItem
+  height: 55px
+  border-bottom: 1px solid rgb(220, 220, 220)
+  border-top: 1px solid rgb(220, 220, 220)
+  width: 100%
+
+  &--Highlighted
+    @extend .FileItem
+    background: #CBB8A9
+
+.FileItem>div
+  height: 100%
+  display: flex
+  text-decoration: none
+  color: rgb(80, 80, 80)
+
+.FileItem>div>div
+  display: flex
+  align-items: center
+
+.FileItem>div:hover
+  color: darken(#CBB8A9, 10%)
+
+.FileItem>div>div>*
+  margin: 10px
+
+.FileItem--Left
+  flex: 1
+
+.ModalContent
+  display: flex
+
+.PdfContent
+  flex: 2
+
+.AdditionalInfo 
+  flex: 1 
+  padding: 30px
