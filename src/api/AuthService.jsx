@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const apiUrl = import.meta.env.VITE_API_AUTH_URL
+const apiUrl = 'http://localhost:8080/api/v1/auth'
 
 const authService = axios.create({
   baseURL: apiUrl,

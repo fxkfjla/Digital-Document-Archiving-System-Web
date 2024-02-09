@@ -1,7 +1,7 @@
 import 'src/styles/auth.sass'
 import { TOKEN_COOKIE_NAME } from 'src/utils/CookieManager'
 import { useUser } from 'src/context/UserContext'
-import { login } from 'src/api/AuthService'
+import authService, { login } from 'src/api/AuthService'
 
 import React, { useState } from 'react'
 import { useCookies } from "react-cookie";

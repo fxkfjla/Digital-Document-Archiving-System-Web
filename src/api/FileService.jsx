@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { getTokenFromCookie } from 'src/utils/CookieManager';
 
-const apiUrl = import.meta.env.VITE_API_FILE_URL
+const apiUrl = 'http://localhost:8080/api/v1/file'
 
 const fileService = axios.create({
   baseURL: apiUrl,
